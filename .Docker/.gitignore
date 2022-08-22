@@ -1,0 +1,4 @@
+.history/
+.docker/zsh/.zsh_history
+.venv/
+*.pyc
