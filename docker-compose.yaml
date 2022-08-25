@@ -1,0 +1,26 @@
+version: "3.8"
+   
+services:
+  database:
+    image: mysql:8.0
+    container_name: jobmonitor_database_1
+    volumes:
+      - "./.mysql-data/db:/var/lib/mysql"
+    restart: always
+    ports:
+      - 3306:3306
+    expose:
+      - "3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: pwdb1
+      MYSQL_DATABASE: django_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pwdb2
+  app:
+    build: .
+    container_name: jobmonitor2
+    command: ./.docker/entrypoint.sh
+    volumes:
+      - .:/home/python/app
+    ports:
+      - "8007:8007"
