@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card border">
+    <div class="card-body">
+        <h5 class="card-title">Cadastro de Tasks</h5>
+
+
+        <table class="table table-ordered table-hover" id="tabelaTasks">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Task Name</th>
+                    <th>Status</th>
+                    <th>Previous Status</th>
+                    <th>Group Task</th>
+                    <th>Creation Date</th>
+                    <th>Update Date</th>                    
+                    <th> Action</th>
+                </tr>
+            </thead>
+            <tbody>                
+                {% for task in tasks %}
+                <tr style="">
+                    <td>{{ task.id }}</td>
+                    <td>{{ task.name }}</td>
+                    <td>{{ task.status }}</td>
+                    <td>{{ task.previous_status }}</td>
+                    <td>{{nameTaskGroup}}</td>
+                    <td>{{task.creation_date}}</td>
+                    <td>{{task.update_date}}</td>                    
+                    <td> <a href="javascript:changeTask({{ task.id }})" class="btn btn-sm btn-secondary">Change</a> </td>
+                </tr>  
+                {%endfor%} 
+            </tbody>
+        </table>
+     
+    </div>
+    <div class="card-footer">
+       <a class="btn btn-sm btn-primary" role="button" href="#">New Task</a>
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="dlgTasks">
+    <div class="modal-dialog" role="document"> 
+        <div class="modal-content">
+            <form class="form-horizontal" id="formTask" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h5 class="modal-title">Novo Task</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="statusTask" class="control-label">Change Status</label>
+                        <div class="input-group">
+                            <select class="form-control" id="statusTask">                               
+                                <option value="running"> running </option>
+                                <option value="success"> success </option>
+                                <option value="error"> error </option>
+                                <option value="stop"> stop </option>
+                            </select>    
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <button type="cancel" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript">
+    function changeTask(id)
+    {
+        $('#dlgTasks').modal('show');
+    }
+    
+    function salvarStatusTask()
+    {
+        $("#dlgTasks").modal('hide');
+        var settings =
+            {
+                "async": true,
+                "crossDomain": true,
+                "url": "{% url 'update_status_task' %}",
+                "method": "POST",                
+                "data" : $('#formTask').serialize()
+            };
+            $.ajax(settings).done(function (response) {
+                console.log(response);
+            });
+    }
+
+    $("#formTask").submit( function(event){ 
+        event.preventDefault(); 
+        
+        salvarStatusTask();   
+        
+    });
+
+    
+</script>
+{% endblock %}
